@@ -41,7 +41,7 @@ namespace :parallel_test do
 
       # Parallel execution using Parallel gem
       Parallel.each_with_index(new_databases_name, in_processes: new_databases_name.size) do |db_name, index|
-        pretty_print("Running migrations on database #{db_name}")
+        pretty_print("Running migrations on database #{db_name} of #{new_databases_name.size} databases - #{index}")
         db_test_configuration = ActiveRecord::Base.configurations.configurations.find { |c| c.env_name == 'test' }
         ActiveRecord::Base.establish_connection(db_test_configuration.configuration_hash.merge('database' => db_name))
         ActiveRecord::MigrationContext.new(Rails.root.join('db', 'migrate')).migrate
