@@ -49,6 +49,7 @@ namespace :parallel_test do
         Rake::Task['db:seed'].invoke
 
         spec_files_chunks[index].each do |spec_file|
+            pretty_print("Running spec file: #{spec_file} on database #{db_name} of #{new_databases_name.size} databases - #{index}")
             Rake::Task['spec'].invoke(spec_file)
         end
       end
