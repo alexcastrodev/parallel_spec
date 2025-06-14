@@ -13,14 +13,9 @@ require 'rspec/rails'
 require 'factory_bot'
 FactoryBot.definition_file_paths = [File.expand_path('factories', __dir__)]
 FactoryBot.find_definitions
-class FakeSearchClient
-  def index(**kwargs); end
-
-  def bulk(*_args)
-    { 'errors' => false, 'items' => [] }
-  end
-end
-Searchkick.client = FakeSearchClient.new
+require 'opensearch'
+Searchkick.client = OpenSearch::Client.new(url: ENV.fetch('OPENSEARCH_URL', 'http://localhost:9200'))
+Searchkick.index_suffix = ENV.fetch('TEST_ENV_NUMBER', '0')
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
