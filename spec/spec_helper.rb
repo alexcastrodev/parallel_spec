@@ -4,8 +4,8 @@ Bundler.require(:default)
 require_relative '../models/user'
 require_relative '../models/post'
 require_relative '../models/comment'
-require_relative 'support/fake_opensearch'
-OpenSearch::Client = FakeOpenSearch
+require_relative 'support/fake_searchkick'
+Searchkick.client = FakeSearchkick.new
 
 ENV['TEST_ENV_NUMBER'] ||= ''
 
@@ -20,7 +20,7 @@ RSpec.configure do |config|
     redis_url = (ENV['REDIS_URL_BASE'] || 'redis://localhost:6379') + '/' + ENV['TEST_ENV_NUMBER'].to_s
     Redis.new(url: redis_url).flushdb
 
-    client = OpenSearch::Client.new
+    client = Searchkick.client
     %w[users posts comments].each do |base|
       index = "#{base}_#{ENV['TEST_ENV_NUMBER'] || '0'}"
       client.delete(index: index) rescue nil

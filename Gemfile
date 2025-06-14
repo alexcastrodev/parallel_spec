@@ -7,7 +7,7 @@ gem 'pg'
 
 gem 'redis'
 
-gem 'opensearch-ruby'
+gem 'searchkick'
 
 gem 'rspec'
 

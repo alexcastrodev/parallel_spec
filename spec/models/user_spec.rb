@@ -10,7 +10,7 @@ describe User do
       redis = Redis.new(url: "#{base}/#{ENV['TEST_ENV_NUMBER']}")
       expect(redis.get("user:#{user.id}")).to eq("User #{i}")
 
-      client = OpenSearch::Client.new(url: ENV['OPENSEARCH_URL'] || 'http://opensearch:9200')
+      client = Searchkick.client
       result = client.get(index: user.index_name, id: user.id)
       expect(result['_source']['name']).to eq("User #{i}")
     end

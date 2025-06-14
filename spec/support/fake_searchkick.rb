@@ -1,4 +1,4 @@
-class FakeOpenSearch
+class FakeSearchkick
   @@indices = Hash.new { |h, k| h[k] = {} }
   def initialize(*args); end
 

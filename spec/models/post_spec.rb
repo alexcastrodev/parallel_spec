@@ -14,7 +14,7 @@ describe Post do
       redis = Redis.new(url: "#{base}/#{ENV['TEST_ENV_NUMBER']}")
       expect(redis.get("post:#{post.id}")).to eq("Post #{i}")
 
-      client = OpenSearch::Client.new(url: ENV['OPENSEARCH_URL'] || 'http://opensearch:9200')
+      client = Searchkick.client
       result = client.get(index: post.index_name, id: post.id)
       expect(result['_source']['title']).to eq("Post #{i}")
     end

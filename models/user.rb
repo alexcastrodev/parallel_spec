@@ -1,9 +1,10 @@
 require 'active_record'
 require 'redis'
-require 'opensearch'
+require 'searchkick'
 
 class User < ActiveRecord::Base
   has_many :posts
+  searchkick index_name: -> { "users_#{ENV['TEST_ENV_NUMBER'] || '0'}" }
 
   after_save :index_document
 
@@ -12,16 +13,12 @@ class User < ActiveRecord::Base
     Redis.new(url: "#{base}/#{ENV['TEST_ENV_NUMBER']}")
   end
 
-  def opensearch
-    OpenSearch::Client.new(url: ENV['OPENSEARCH_URL'] || 'http://opensearch:9200')
-  end
-
   def index_name
-    "users_\#{ENV['TEST_ENV_NUMBER'] || '0'}"
+    "users_#{ENV['TEST_ENV_NUMBER'] || '0'}"
   end
 
   def index_document
-    opensearch.index(index: index_name, id: id, body: attributes)
+    Searchkick.client.index(index: index_name, id: id, body: attributes)
     redis.set("user:#{id}", name)
   end
 end

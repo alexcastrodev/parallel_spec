@@ -14,7 +14,7 @@ describe Comment do
       redis = Redis.new(url: "#{base}/#{ENV['TEST_ENV_NUMBER']}")
       expect(redis.get("comment:#{comment.id}")).to eq("Comment #{i}")
 
-      client = OpenSearch::Client.new(url: ENV['OPENSEARCH_URL'] || 'http://opensearch:9200')
+      client = Searchkick.client
       result = client.get(index: comment.index_name, id: comment.id)
       expect(result['_source']['body']).to eq("Comment #{i}")
     end
