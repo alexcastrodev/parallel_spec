@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Comment do
   before do
@@ -10,9 +10,7 @@ describe Comment do
       comment = create(:comment, post: @post, body: "Comment #{i}")
       expect(Comment.find_by(body: "Comment #{i}")).to eq(comment)
 
-      base = ENV['REDIS_URL_BASE'] || 'redis://localhost:6379'
-      redis = Redis.new(url: "#{base}/#{ENV['TEST_ENV_NUMBER']}")
-      expect(redis.get("comment:#{comment.id}")).to eq("Comment #{i}")
+      expect(Rails.cache.read("comment:#{comment.id}").body).to eq("Comment #{i}")
 
       client = Searchkick.client
       result = client.get(index: comment.index_name, id: comment.id)

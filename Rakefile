@@ -1,2 +1,2 @@
-require_relative "app/app"
-require 'sinatra/activerecord/rake'
+require_relative 'config/application'
+Rails.application.load_tasks
