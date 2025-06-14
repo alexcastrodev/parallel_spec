@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PostContract < Dry::Validation::Contract
   params do
     required(:title).filled(:string)
