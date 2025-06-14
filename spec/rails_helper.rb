@@ -12,7 +12,9 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'rspec/rails'
 require 'factory_bot'
 FactoryBot.definition_file_paths = [File.expand_path('factories', __dir__)]
-FactoryBot.find_definitions
+# Avoid duplicate factory registrations when `rails_helper` is loaded multiple
+# times in parallel specs.
+FactoryBot.find_definitions unless FactoryBot.factories.registered?(:user)
 require 'opensearch'
 Searchkick.client = OpenSearch::Client.new(url: ENV.fetch('OPENSEARCH_URL', 'http://localhost:9200'))
 Searchkick.index_suffix = ENV.fetch('TEST_ENV_NUMBER', '0')

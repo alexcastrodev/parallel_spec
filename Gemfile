@@ -23,6 +23,7 @@ gem 'alba'
 gem 'dry-validation'
 gem 'rails', '~> 8.0.0'
 gem 'rswag'
+gem 'sidekiq'
 
 # Linting and style checking
 gem 'rubocop', require: false
