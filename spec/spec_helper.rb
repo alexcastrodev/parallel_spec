@@ -1,3 +1,8 @@
+require 'simplecov'
+require 'codecov'
+SimpleCov.formatter = SimpleCov::Formatter::Codecov
+SimpleCov.start
+
 require 'bundler/setup'
 Bundler.require(:default)
 

@@ -16,3 +16,6 @@ gem 'parallel_tests'
 gem "rake"
 
 gem 'database_cleaner-active_record'
+
+gem 'simplecov', require: false
+gem 'codecov', require: false

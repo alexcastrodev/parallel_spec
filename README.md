@@ -1,5 +1,7 @@
 # Parallel Spec Example
 
+[![codecov](https://codecov.io/gh/<user>/<repo>/branch/main/graph/badge.svg)](https://codecov.io/gh/<user>/<repo>)
+
 This project demonstrates a Sinatra application using ActiveRecord, Redis and OpenSearch with Searchkick. Tests are written with RSpec and can be executed in parallel.
 
 ## Services
@@ -46,3 +48,14 @@ Open this repository with VS Code and the Dev Containers extension to get a read
    ```
 
 Each example truncates its tables, flushes its Redis database, and recreates OpenSearch indexes so specs do not interfere with each other.
+
+## Code Coverage
+
+This project uses [SimpleCov](https://github.com/simplecov-ruby/simplecov) with the
+[Codecov](https://about.codecov.io/) formatter. When tests are run, a coverage
+report is generated in `coverage/`. When running in CI with the `CODECOV_TOKEN`
+environment variable set, the results can be uploaded to Codecov:
+
+```bash
+CODECOV_TOKEN=your-token bundle exec rspec
+```
