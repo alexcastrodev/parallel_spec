@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Comment < ActiveRecord::Base
   belongs_to :post
   searchkick index_name: -> { "comments_#{ENV['TEST_ENV_NUMBER'] || '0'}" }
