@@ -1,0 +1,15 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  host: <%= ENV['DB_HOST'] || 'db' %>
+  username: <%= ENV['DB_USER'] || 'postgres' %>
+  password: <%= ENV['DB_PASSWORD'] || 'password' %>
+
+development:
+  <<: *default
+  database: sinatra_dev
+
+test:
+  <<: *default
+  database: sinatra_test<%= ENV['TEST_ENV_NUMBER'] %>
