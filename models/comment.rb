@@ -1,7 +1,3 @@
-require 'active_record'
-require 'rails'
-require 'searchkick'
-
 class Comment < ActiveRecord::Base
   belongs_to :post
   searchkick index_name: -> { "comments_#{ENV['TEST_ENV_NUMBER'] || '0'}" }

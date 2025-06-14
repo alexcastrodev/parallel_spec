@@ -1,7 +1,3 @@
-require 'active_record'
-require 'rails'
-require 'searchkick'
-
 class Post < ActiveRecord::Base
   belongs_to :user
   has_many :comments

@@ -1,7 +1,3 @@
-require 'active_record'
-require 'rails'
-require 'searchkick'
-
 class User < ActiveRecord::Base
   has_many :posts
   searchkick index_name: -> { "users_#{ENV['TEST_ENV_NUMBER'] || '0'}" }
