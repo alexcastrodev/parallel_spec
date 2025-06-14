@@ -3,7 +3,17 @@ require 'codecov'
 SimpleCov.formatter = SimpleCov::Formatter::Codecov
 SimpleCov.start
 
+ENV['RACK_ENV'] ||= 'test'
 require 'bundler/setup'
+require 'yaml'
+require 'erb'
+require 'active_record'
+db_config = YAML.safe_load(
+  ERB.new(File.read(File.expand_path('../config/database.yml', __dir__))).result,
+  aliases: true
+)
+db_settings = db_config['test']
+ActiveRecord::Base.configurations = {'test' => db_settings}
 Bundler.require(:default)
 
 require_relative '../models/user'
@@ -16,7 +26,8 @@ Searchkick.client = OpenSearch::Client.new(url: ENV['OPENSEARCH_URL'] || 'http:/
 ENV['TEST_ENV_NUMBER'] ||= ''
 
 ActiveRecord::Base.logger = Logger.new(nil)
-ActiveRecord::Base.establish_connection(:test)
+ActiveRecord::Base.establish_connection(db_settings)
+load File.expand_path('../db/schema.rb', __dir__)
 
 RSpec.configure do |config|
   config.before(:each) do
