@@ -1,6 +1,12 @@
 class UsersController < ApplicationController
+  def index
+    query = params[:query].to_s
+    users = query.empty? ? User.all : User.search(query)
+    render json: users.map { |u| UserSerializer.new(u).serializable_hash }
+  end
+
   def create
-    result = UserContract.new.call(params.permit(:name).to_h)
+    result = UserContract.new.call(params.to_unsafe_h)
     if result.success?
       user = User.create(result.to_h)
       if user.persisted?
@@ -30,7 +36,7 @@ class UsersController < ApplicationController
     unless user
       head :not_found and return
     end
-    result = UserContract.new.call(params.permit(:name).to_h)
+    result = UserContract.new.call(params.to_unsafe_h)
     if result.success?
       if user.update(result.to_h)
         Rails.cache.write("user:#{user.id}", user)

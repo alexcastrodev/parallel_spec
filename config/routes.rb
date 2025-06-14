@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-  resources :users do
-    resources :posts do
-      resources :comments
+  namespace :api do
+    resources :users, only: [:index, :show, :create, :update] do
+      resources :posts, only: [:index, :show, :create, :update] do
+        resources :comments, only: [:index, :show, :create, :update]
+      end
     end
   end
 end
