@@ -1,15 +1,14 @@
 # Parallel Spec Example
 
-This project demonstrates a Sinatra application using ActiveRecord, Redis and OpenSearch with Searchkick. Tests are written with RSpec and can be executed in parallel.
+This project demonstrates a Rails 8 API application using ActiveRecord, Rails cache and OpenSearch with Searchkick. Tests are written with RSpec and can be executed in parallel.
 
 ## Services
 
 `docker-compose.yml` provides the following containers:
 
 - **db**: PostgreSQL
-- **redis**: Redis
 - **opensearch**: OpenSearch
-- **web**: Sinatra application
+- **web**: Rails application
 
 ## Dev Container
 
@@ -42,7 +41,7 @@ docker compose run -it --rm web bash
    bundle exec parallel_rspec -n 2 spec
    ```
 
-Each example truncates its tables, flushes its Redis database, and recreates OpenSearch indexes so specs do not interfere with each other.
+Each example truncates its tables, clears Rails cache, and recreates OpenSearch indexes so specs do not interfere with each other.
 
 Integration tests are written using RSwag. To generate the Swagger document run:
 
