@@ -31,13 +31,26 @@ GEM
     database_cleaner-core (2.0.1)
     diff-lcs (1.6.2)
     drb (2.2.3)
+    faraday (2.13.1)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-net_http (3.4.0)
+      net-http (>= 0.5.0)
     hashie (5.0.0)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
+    json (2.12.2)
     logger (1.7.0)
     minitest (5.25.5)
+    multi_json (1.15.0)
     mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
+    net-http (0.6.0)
+      uri
+    opensearch-ruby (3.4.0)
+      faraday (>= 1.0, < 3)
+      multi_json (>= 1.0)
     parallel (1.27.0)
     parallel_tests (5.3.0)
       parallel
@@ -95,6 +108,7 @@ PLATFORMS
 
 DEPENDENCIES
   database_cleaner-active_record
+  opensearch-ruby
   parallel_tests
   pg
   rake

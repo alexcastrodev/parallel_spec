@@ -4,8 +4,9 @@ Bundler.require(:default)
 require_relative '../models/user'
 require_relative '../models/post'
 require_relative '../models/comment'
-require_relative 'support/fake_searchkick'
-Searchkick.client = FakeSearchkick.new
+require 'opensearch-ruby'
+Searchkick.client = OpenSearch::Client.new(url: ENV['OPENSEARCH_URL'] || 'http://localhost:9200',
+                                           transport_options: {request: {timeout: 5}})
 
 ENV['TEST_ENV_NUMBER'] ||= ''
 
@@ -23,8 +24,12 @@ RSpec.configure do |config|
     client = Searchkick.client
     %w[users posts comments].each do |base|
       index = "#{base}_#{ENV['TEST_ENV_NUMBER'] || '0'}"
-      client.delete(index: index) rescue nil
-      client.create(index: index)
+      begin
+        client.indices.delete(index: index)
+      rescue StandardError
+        nil
+      end
+      client.indices.create(index: index)
     end
   end
 end
