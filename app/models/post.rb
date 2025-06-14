@@ -5,10 +5,9 @@ class Post < ActiveRecord::Base
   has_many :comments
   searchkick
 
-  after_commit :index_document
+  after_commit :enqueue_update_job
 
-  def index_document
-    Searchkick.client.index(index: searchkick_index.name, id: id, body: attributes)
-    Rails.cache.write("post:#{id}", self)
+  def enqueue_update_job
+    UpdatePostBodyWorker.perform_async(id)
   end
 end
