@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5432:5432'
+  redis:
+    image: redis:7
+    ports:
+      - '6379:6379'
+  opensearch:
+    image: opensearchproject/opensearch:2.14.0
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=Admin123@@321
+    ports:
+      - '9200:9200'
+  web:
+    build: .
+    environment:
+      DB_HOST: db
+      DB_PASSWORD: password
+      REDIS_URL_BASE: redis://redis:6379
+      REDIS_URL: redis://redis:6379/0
+      OPENSEARCH_URL: http://opensearch:9200
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+      - opensearch
+    ports:
+      - '4567:4567'
