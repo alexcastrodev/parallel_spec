@@ -8,6 +8,8 @@ require 'bundler/setup'
 require 'yaml'
 require 'erb'
 require 'active_record'
+require 'factory_bot'
+require 'rack/test'
 db_config = YAML.safe_load(
   ERB.new(File.read(File.expand_path('../config/database.yml', __dir__))).result,
   aliases: true
@@ -30,6 +32,11 @@ ActiveRecord::Base.establish_connection(db_settings)
 load File.expand_path('../db/schema.rb', __dir__)
 
 RSpec.configure do |config|
+  config.include FactoryBot::Syntax::Methods
+  config.include Rack::Test::Methods
+  config.before(:suite) do
+    FactoryBot.find_definitions
+  end
   config.before(:each) do
     tables = %w[comments posts users]
     tables.each { |t| ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{t} RESTART IDENTITY CASCADE") }

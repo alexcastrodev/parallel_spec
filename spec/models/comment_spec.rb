@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Comment do
   before do
-    @post = User.create!(name: 'Author').posts.create!(title: 't', body: 'b')
+    @post = create(:post)
   end
 
   10.times do |i|
     it "creates comment #{i}" do
-      comment = @post.comments.create!(body: "Comment #{i}")
+      comment = create(:comment, post: @post, body: "Comment #{i}")
       expect(Comment.find_by(body: "Comment #{i}")).to eq(comment)
 
       base = ENV['REDIS_URL_BASE'] || 'redis://localhost:6379'

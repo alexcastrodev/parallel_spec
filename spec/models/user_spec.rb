@@ -3,7 +3,7 @@ require 'spec_helper'
 describe User do
   10.times do |i|
     it "creates user #{i}" do
-      user = User.create!(name: "User #{i}")
+      user = create(:user, name: "User #{i}")
       expect(User.find_by(name: "User #{i}")).to eq(user)
 
       base = ENV['REDIS_URL_BASE'] || 'redis://localhost:6379'

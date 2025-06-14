@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Post do
   before do
-    @user = User.create!(name: 'Author')
+    @user = create(:user, name: 'Author')
   end
 
   10.times do |i|
     it "creates post #{i}" do
-      post = @user.posts.create!(title: "Post #{i}", body: 'body')
+      post = create(:post, user: @user, title: "Post #{i}")
       expect(Post.find_by(title: "Post #{i}")).to eq(post)
 
       base = ENV['REDIS_URL_BASE'] || 'redis://localhost:6379'

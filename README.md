@@ -49,6 +49,12 @@ Open this repository with VS Code and the Dev Containers extension to get a read
 
 Each example truncates its tables, flushes its Redis database, and recreates OpenSearch indexes so specs do not interfere with each other.
 
+Integration tests are written using RSwag. To generate the Swagger document run:
+
+```bash
+bundle exec rake rswag:specs:swaggerize
+```
+
 ## Code Coverage
 
 This project uses [SimpleCov](https://github.com/simplecov-ruby/simplecov) with the

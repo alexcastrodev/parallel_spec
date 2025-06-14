@@ -19,3 +19,7 @@ gem 'database_cleaner-active_record'
 
 gem 'simplecov', require: false
 gem 'codecov', require: false
+
+gem 'factory_bot'
+gem 'rack-test'
+gem 'rswag-specs', require: false
