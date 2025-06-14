@@ -1,8 +1,3 @@
-require 'simplecov'
-require 'codecov'
-SimpleCov.formatter = SimpleCov::Formatter::Codecov
-SimpleCov.start
-
 ENV['RACK_ENV'] ||= 'test'
 require 'bundler/setup'
 require 'yaml'

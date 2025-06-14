@@ -1,4 +1,5 @@
-require 'swagger_helper'
+require 'rack/test'
+require 'json'
 require_relative '../../app/app'
 
 RSpec.describe 'API', type: :request do
@@ -8,18 +9,15 @@ RSpec.describe 'API', type: :request do
     App.new
   end
 
-  path '/users' do
-    post 'Creates a user' do
-      consumes 'application/json'
-      parameter name: :user, in: :body, schema: { type: :object, properties: { name: { type: :string } }, required: ['name'] }
+  describe 'POST /users' do
+    it 'creates a user and returns 201 status' do
+      user_params = { name: 'John' }.to_json
+      header 'Content-Type', 'application/json'
+      post '/users', user_params
 
-      response '201', 'user created' do
-        let(:user) { { name: 'John' } }
-        run_test! do |response|
-          data = JSON.parse(response.body)
-          expect(data['name']).to eq('John')
-        end
-      end
+      expect(last_response.status).to eq(201)
+      data = JSON.parse(last_response.body)
+      expect(data['name']).to eq('John')
     end
   end
 end

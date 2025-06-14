@@ -1,7 +1,5 @@
 # Parallel Spec Example
 
-[![codecov](https://codecov.io/gh/<user>/<repo>/branch/main/graph/badge.svg)](https://codecov.io/gh/<user>/<repo>)
-
 This project demonstrates a Sinatra application using ActiveRecord, Redis and OpenSearch with Searchkick. Tests are written with RSpec and can be executed in parallel.
 
 ## Services
@@ -19,6 +17,13 @@ Open this repository with VS Code and the Dev Containers extension to get a read
 
 ## Running Tests in Parallel
 
+Enter the development container or run the following command to start the web service in a terminal:
+
+```bash
+docker compose run -it --rm web bash
+```
+
+
 1. Install Ruby dependencies:
 
    ```bash
@@ -28,22 +33,12 @@ Open this repository with VS Code and the Dev Containers extension to get a read
 2. Create the test databases and load the schema:
 
    ```bash
-   bundle exec rake db:create db:migrate
-   bundle exec rake parallel:create
-   bundle exec rake parallel:prepare
+   for i in 1 2 3 4; do TEST_ENV_NUMBER=$i bundle exec rake db:create; done
    ```
 
 3. Start the service stack:
 
    ```bash
-   docker-compose up -d
-   ```
-
-4. Execute specs in parallel (two processes in this example):
-
-   ```bash
-   DB_HOST=localhost DB_PASSWORD=password \
-   REDIS_URL_BASE=redis://localhost:6379 \
    bundle exec parallel_rspec -n 2 spec
    ```
 
@@ -53,15 +48,4 @@ Integration tests are written using RSwag. To generate the Swagger document run:
 
 ```bash
 bundle exec rake rswag:specs:swaggerize
-```
-
-## Code Coverage
-
-This project uses [SimpleCov](https://github.com/simplecov-ruby/simplecov) with the
-[Codecov](https://about.codecov.io/) formatter. When tests are run, a coverage
-report is generated in `coverage/`. When running in CI with the `CODECOV_TOKEN`
-environment variable set, the results can be uploaded to Codecov:
-
-```bash
-CODECOV_TOKEN=your-token bundle exec rspec
 ```
