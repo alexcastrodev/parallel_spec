@@ -3,7 +3,7 @@ class PostsController < ApplicationController
   before_action :set_post, only: [:show, :update]
 
   def create
-    result = PostContract.new.call(post_params)
+    result = PostContract.new.call(post_params.to_h)
     if result.success?
       post = @user.posts.create(result.to_h.except(:user_id))
       if post.persisted?
@@ -23,7 +23,9 @@ class PostsController < ApplicationController
   end
 
   def update
-    result = PostContract.new.call(post_params)
+    attrs = @post.attributes.slice('title', 'body', 'user_id').symbolize_keys
+    attrs.merge!(post_params.to_h)
+    result = PostContract.new.call(attrs)
     if result.success?
       if @post.update(result.to_h.except(:user_id))
         Rails.cache.write("post:#{@post.id}", @post)

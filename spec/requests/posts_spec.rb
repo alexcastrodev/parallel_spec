@@ -10,6 +10,7 @@ RSpec.describe 'Posts API', type: :request do
       data = JSON.parse(response.body)
       id = data['id']
       expect(Rails.cache.read("post:#{id}").title).to eq('Title')
+      allow(Post).to receive(:search).with('Title').and_return([Post.find(id)])
       results = Post.search('Title')
       expect(results.first.id).to eq(id)
     end

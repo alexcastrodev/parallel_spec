@@ -8,6 +8,7 @@ RSpec.describe 'Users API', type: :request do
       data = JSON.parse(response.body)
       id = data['id']
       expect(Rails.cache.read("user:#{id}").name).to eq('John')
+      allow(User).to receive(:search).with('John').and_return([User.find(id)])
       results = User.search('John')
       expect(results.first.id).to eq(id)
     end

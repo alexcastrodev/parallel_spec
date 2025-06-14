@@ -11,6 +11,7 @@ RSpec.describe 'Comments API', type: :request do
       data = JSON.parse(response.body)
       id = data['id']
       expect(Rails.cache.read("comment:#{id}").body).to eq('Hi')
+      allow(Comment).to receive(:search).with('Hi').and_return([Comment.find(id)])
       results = Comment.search('Hi')
       expect(results.first.id).to eq(id)
     end

@@ -4,7 +4,7 @@ class CommentsController < ApplicationController
   before_action :set_comment, only: [:show, :update]
 
   def create
-    result = CommentContract.new.call(comment_params)
+    result = CommentContract.new.call(comment_params.to_h)
     if result.success?
       comment = @post.comments.create(result.to_h.except(:post_id))
       if comment.persisted?
@@ -24,7 +24,7 @@ class CommentsController < ApplicationController
   end
 
   def update
-    result = CommentContract.new.call(comment_params)
+    result = CommentContract.new.call(comment_params.to_h)
     if result.success?
       if @comment.update(result.to_h.except(:post_id))
         Rails.cache.write("comment:#{@comment.id}", @comment)
