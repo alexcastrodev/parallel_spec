@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PostsController < ApplicationController
+class Api::PostsController < Api::ApiController
   before_action :set_user
   before_action :set_post, only: %i[show update]
 

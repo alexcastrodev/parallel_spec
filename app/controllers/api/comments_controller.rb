@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-class CommentsController < ApplicationController
-  before_action :set_user
-  before_action :set_post
-  before_action :set_comment, only: %i[show update]
+class Api::CommentsController < Api::ApiController
+  before_action :load_post
+  before_action :load_comment, only: %i[show update]
 
   def index
     query = params[:query].to_s
@@ -51,15 +50,12 @@ class CommentsController < ApplicationController
 
   private
 
-  def set_user
+  def load_post
     @user = User.find(params[:user_id])
-  end
-
-  def set_post
     @post = @user.posts.find(params[:post_id])
   end
 
-  def set_comment
+  def load_comment
     @comment = @post.comments.find(params[:id])
   end
 end

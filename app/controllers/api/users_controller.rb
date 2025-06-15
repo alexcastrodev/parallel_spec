@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UsersController < ApplicationController
+class Api::UsersController < Api::ApiController
   def index
     query = params[:query].to_s
     users = query.empty? ? User.all : User.search(query)

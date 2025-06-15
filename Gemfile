@@ -27,6 +27,8 @@ gem 'rswag-api'
 gem 'rswag-ui'
 gem 'rswag-specs'
 gem 'sidekiq'
+gem 'pry'
+gem 'pry-rails'
 
 # Linting and style checking
 gem 'rubocop', require: false
