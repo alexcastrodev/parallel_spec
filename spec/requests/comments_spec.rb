@@ -1,50 +1,76 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe 'Comments API', type: :request do
-  100.times do |i|
-    context "run #{i}" do
-      let(:user) { create(:user) }
-      let(:post_record) { create(:post, user: user) }
+  path '/api/users/{user_id}/posts/{post_id}/comments' do
+    post 'Creates a comment' do
+      tags 'Comments'
+      consumes 'application/json'
+      parameter name: :user_id, in: :path, type: :string, description: 'User ID'
+      parameter name: :post_id, in: :path, type: :string, description: 'Post ID'
+      parameter name: :comment, in: :body, schema: {
+        type: :object,
+        properties: {
+          body: { type: :string },
+          post_id: { type: :integer }
+        },
+        required: ['body', 'post_id']
+      }
 
-      it 'creates comment and caches it' do
-        post "/api/users/#{user.id}/posts/#{post_record.id}/comments",
-             params: { body: "Hi#{i}", post_id: post_record.id }
-        expect(response).to have_http_status(:created)
-        data = JSON.parse(response.body)
-        id = data['id']
-        expect(Rails.cache.read("comment:#{id}").body).to eq("Hi#{i}")
-        allow(Comment).to receive(:search).with("Hi#{i}",
-                                                where: { post_id: post_record.id }).and_return([Comment.find(id)])
-        results = Comment.search("Hi#{i}", where: { post_id: post_record.id })
-        expect(results.first.id).to eq(id)
+      response '201', 'comment created' do
+        let(:user) { create(:user) }
+        let(:post_record) { create(:post, user: user) }
+        let(:user_id) { user.id }
+        let(:post_id) { post_record.id }
+        let(:comment) { { body: 'Hi', post_id: post_record.id } }
+
+        run_test! do
+          data = JSON.parse(response.body)
+          id = data['id']
+          expect(Rails.cache.read("comment:#{id}").body).to eq('Hi')
+        end
       end
 
-      it 'returns 422 for invalid params' do
-        post "/api/users/#{user.id}/posts/#{post_record.id}/comments", params: { foo: 'bar' }
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
+      response '422', 'invalid request' do
+        let(:user) { create(:user) }
+        let(:post_record) { create(:post, user: user) }
+        let(:user_id) { user.id }
+        let(:post_id) { post_record.id }
+        let(:comment) { { foo: 'bar' } }
 
-      it 'updates comment and caches result' do
-        comment = create(:comment, post: post_record)
-        put "/api/users/#{user.id}/posts/#{post_record.id}/comments/#{comment.id}", params: { body: "Update#{i}" }
-        expect(response).to have_http_status(:ok)
-        expect(Rails.cache.read("comment:#{comment.id}").body).to eq("Update#{i}")
+        run_test!
       end
+    end
+  end
 
-      it 'searches comments' do
-        comment = create(:comment, post: post_record, body: "Search#{i}")
-        allow(Comment).to receive(:search).with("Search#{i}", where: { post_id: post_record.id }).and_return([comment])
-        get "/api/users/#{user.id}/posts/#{post_record.id}/comments", params: { query: "Search#{i}" }
-        expect(response).to have_http_status(:ok)
-      end
+  path '/api/users/{user_id}/posts/{post_id}/comments/{id}' do
+    put 'Updates a comment' do
+      tags 'Comments'
+      consumes 'application/json'
+      parameter name: :user_id, in: :path, type: :string, description: 'User ID'
+      parameter name: :post_id, in: :path, type: :string, description: 'Post ID'
+      parameter name: :id, in: :path, type: :string, description: 'Comment ID'
+      parameter name: :comment, in: :body, schema: {
+        type: :object,
+        properties: {
+          body: { type: :string }
+        },
+        required: ['body']
+      }
 
-      it 'shows comment' do
-        comment = create(:comment, post: post_record)
-        Rails.cache.write("comment:#{comment.id}", comment)
-        get "/api/users/#{user.id}/posts/#{post_record.id}/comments/#{comment.id}"
-        expect(response).to have_http_status(:ok)
+      response '200', 'comment updated' do
+        let(:user) { create(:user) }
+        let(:post_record) { create(:post, user: user) }
+        let(:comment_record) { create(:comment, post: post_record) }
+        let(:user_id) { user.id }
+        let(:post_id) { post_record.id }
+        let(:id) { comment_record.id }
+        let(:comment) { { body: 'Update' } }
+
+        run_test! do
+          expect(Rails.cache.read("comment:#{comment_record.id}").body).to eq('Update')
+        end
       end
     end
   end

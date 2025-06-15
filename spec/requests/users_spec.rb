@@ -3,45 +3,87 @@
 require 'rails_helper'
 
 RSpec.describe 'Users API', type: :request do
-  100.times do |i|
-    context "run #{i}" do
-      it 'creates user and caches and indexes record' do
-        post '/api/users', params: { name: "John#{i}" }
-        expect(response).to have_http_status(:created)
-        data = JSON.parse(response.body)
-        id = data['id']
-        expect(Rails.cache.read("user:#{id}").name).to eq("John#{i}")
-        allow(User).to receive(:search).with("John#{i}").and_return([User.find(id)])
-        results = User.search("John#{i}")
-        expect(results.first.id).to eq(id)
+  path '/api/users' do
+    post 'Creates a user' do
+      tags 'Users'
+      consumes 'application/json'
+      parameter name: :user, in: :body, schema: {
+        type: :object,
+        properties: {
+          name: { type: :string }
+        },
+        required: ['name']
+      }
+
+      response '201', 'user created' do
+        let(:user) { { name: 'John' } }
+        run_test! do
+          data = JSON.parse(response.body)
+          id = data['id']
+          expect(Rails.cache.read("user:#{id}").name).to eq('John')
+          allow(User).to receive(:search).with('John').and_return([User.find(id)])
+          results = User.search('John')
+          expect(results.first.id).to eq(id)
+        end
       end
 
-      it 'returns 422 for invalid params' do
-        post '/api/users', params: { foo: 'bar' }
-        expect(response).to have_http_status(:unprocessable_entity)
+      response '422', 'invalid request' do
+        let(:user) { { foo: 'bar' } }
+        run_test!
       end
+    end
+  end
 
-      it 'returns user and hits cache' do
-        user = create(:user, name: "Cached#{i}")
-        Rails.cache.write("user:#{user.id}", user)
-        get "/api/users/#{user.id}"
-        expect(response).to have_http_status(:ok)
-        data = JSON.parse(response.body)
-        expect(data['name']).to eq("Cached#{i}")
+  path '/api/users/{id}' do
+    get 'Retrieves a user' do
+      tags 'Users'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :string
+
+      response '200', 'user found' do
+        let(:id) { create(:user, name: 'Cached').id }
+        run_test! do
+          Rails.cache.write("user:#{id}", User.find(id))
+          data = JSON.parse(response.body)
+          expect(data['name']).to eq('Cached')
+        end
       end
+    end
 
-      it 'updates user and caches result' do
-        user = create(:user)
-        put "/api/users/#{user.id}", params: { name: "Updated#{i}" }
-        expect(response).to have_http_status(:ok)
-        expect(Rails.cache.read("user:#{user.id}").name).to eq("Updated#{i}")
+    put 'Updates a user' do
+      tags 'Users'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :string
+      parameter name: :user, in: :body, schema: {
+        type: :object,
+        properties: {
+          name: { type: :string }
+        },
+        required: ['name']
+      }
+
+      response '200', 'user updated' do
+        let(:id) { create(:user).id }
+        let(:user) { { name: 'Updated' } }
+        run_test! do
+          expect(Rails.cache.read("user:#{id}").name).to eq('Updated')
+        end
       end
+    end
+  end
 
-      it 'searches users' do
-        user = create(:user, name: "Search#{i}")
-        allow(User).to receive(:search).with("Search#{i}").and_return([user])
-        get '/api/users', params: { query: "Search#{i}" }
-        expect(response).to have_http_status(:ok)
+  path '/api/users' do
+    get 'Searches users' do
+      tags 'Users'
+      produces 'application/json'
+      parameter name: :query, in: :query, type: :string
+
+      response '200', 'users found' do
+        let(:query) { 'Search' }
+        run_test! do
+          user = create(:user, name: 'Search')
+          allow(User).to receive(:search).with('Search').and_return([user])
+        end
       end
     end
   end

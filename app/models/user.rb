@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   after_commit :index_document
 
   def index_document
-    Searchkick.client.index(index: searchkick_index.name, id: id, body: attributes)
+    User.reindex
     Rails.cache.write("user:#{id}", self)
   end
 end

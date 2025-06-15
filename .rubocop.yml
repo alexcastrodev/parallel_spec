@@ -17,3 +17,7 @@ Metrics/MethodLength:
 
 Metrics/AbcSize:
   Enabled: false
+
+Style/WordArray:
+  Enabled: true
+  EnforcedStyle: brackets

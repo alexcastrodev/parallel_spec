@@ -7,7 +7,7 @@ class Comment < ActiveRecord::Base
   after_commit :index_document
 
   def index_document
-    Searchkick.client.index(index: searchkick_index.name, id: id, body: attributes)
+    Comment.reindex
     Rails.cache.write("comment:#{id}", self)
   end
 end
