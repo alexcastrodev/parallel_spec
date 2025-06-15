@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'rswag/specs'
+require 'rswag/api'
 
 RSpec.configure do |config|
   # Specify a root folder where Swagger JSON files are generated
   # NOTE: If you're using the rswag-api to serve API descriptions, you'll need
   # to ensure that it's configured to serve Swagger from the same folder
   config.openapi_root = Rails.root.join('swagger').to_s
-
+  # Add Rswag configuration
+  config.rswag_dry_run = false
   # Define one or more Swagger documents and provide global metadata for each one
   # When you run the 'rswag:specs:swaggerize' rake task, the complete Swagger will
   # be generated at the provided relative path under openapi_root

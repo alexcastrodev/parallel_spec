@@ -5,6 +5,11 @@ class User < ActiveRecord::Base
   searchkick
 
   after_commit :index_document
+  before_create :set_default_name
+
+  def set_default_name
+    sleep 1 # Simulate a delay for testing purposes
+  end
 
   def index_document
     User.reindex

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swagger_helper'
+require 'openapi_helper'
 
 RSpec.describe 'Comments API', type: :request do
   path '/api/users/{user_id}/posts/{post_id}/comments' do
@@ -28,7 +28,10 @@ RSpec.describe 'Comments API', type: :request do
         run_test! do
           data = JSON.parse(response.body)
           id = data['id']
-          expect(Rails.cache.read("comment:#{id}").body).to eq('Hi')
+
+          # Ensure the comment is cached after creation
+          cached_comment = Rails.cache.read("comment:#{id}")
+          expect(cached_comment.body).to eq('Hi')
         end
       end
 
@@ -69,7 +72,12 @@ RSpec.describe 'Comments API', type: :request do
         let(:comment) { { body: 'Update' } }
 
         run_test! do
-          expect(Rails.cache.read("comment:#{comment_record.id}").body).to eq('Update')
+          # Update the comment first
+          put "/api/users/#{user_id}/posts/#{post_id}/comments/#{id}", params: { comment: comment }, as: :json
+
+          # Ensure the updated comment is cached correctly
+          cached_comment = Rails.cache.read("comment:#{id}")
+          expect(cached_comment.body).to eq('Update')
         end
       end
     end

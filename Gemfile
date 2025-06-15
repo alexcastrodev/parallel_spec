@@ -21,14 +21,14 @@ gem 'rack-test'
 # New gems for Rails API implementation
 gem 'alba'
 gem 'dry-validation'
+gem 'pry'
+gem 'pry-rails'
 gem 'rails', '~> 8.0.0'
 gem 'rswag'
 gem 'rswag-api'
-gem 'rswag-ui'
 gem 'rswag-specs'
+gem 'rswag-ui'
 gem 'sidekiq'
-gem 'pry'
-gem 'pry-rails'
 
 # Linting and style checking
 gem 'rubocop', require: false

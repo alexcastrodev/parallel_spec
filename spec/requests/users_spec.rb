@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'openapi_helper'
 
 RSpec.describe 'Users API', type: :request do
   path '/api/users' do

@@ -1,0 +1,154 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/users/{user_id}/posts/{post_id}/comments":
+    post:
+      summary: Creates a comment
+      tags:
+      - Comments
+      parameters:
+      - name: user_id
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: string
+      - name: post_id
+        in: path
+        description: Post ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: comment created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                post_id:
+                  type: integer
+              required:
+              - body
+              - post_id
+  "/api/users/{user_id}/posts/{post_id}/comments/{id}":
+    put:
+      summary: Updates a comment
+      tags:
+      - Comments
+      parameters:
+      - name: user_id
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: string
+      - name: post_id
+        in: path
+        description: Post ID
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Comment ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: comment updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+              required:
+              - body
+  "/api/users":
+    post:
+      summary: Creates a user
+      tags:
+      - Users
+      parameters: []
+      responses:
+        '201':
+          description: user created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+    get:
+      summary: Searches users
+      tags:
+      - Users
+      parameters:
+      - name: query
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: users found
+  "/api/users/{id}":
+    get:
+      summary: Retrieves a user
+      tags:
+      - Users
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: user found
+    put:
+      summary: Updates a user
+      tags:
+      - Users
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: user updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com
