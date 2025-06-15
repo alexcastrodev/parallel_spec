@@ -23,6 +23,9 @@ gem 'alba'
 gem 'dry-validation'
 gem 'rails', '~> 8.0.0'
 gem 'rswag'
+gem 'rswag-api'
+gem 'rswag-ui'
+gem 'rswag-specs'
 gem 'sidekiq'
 
 # Linting and style checking

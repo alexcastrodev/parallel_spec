@@ -362,6 +362,9 @@ DEPENDENCIES
   rspec
   rspec-rails
   rswag
+  rswag-api
+  rswag-specs
+  rswag-ui
   rubocop
   rubocop-rspec
   searchkick
